@@ -668,11 +668,6 @@
             const isFirstCard = filteredCards.indexOf(card) === 0;
             const videoContent = isFirstCard ? `
                 <div class="video-container">
-                    <button class="video-play-btn" onclick="playVideo('${card.kanji}')">▶ Reproducir Video</button>
-                    <video class="content-video" id="video-${card.kanji}" controls>
-                        <source src="videos/story_clip_1.mp4" type="video/mp4">
-                        Tu navegador no soporta video.
-                    </video>
                 </div>
             ` : '';
             const isFirstCardContent = isFirstCard ? 'show' : '';
