@@ -661,24 +661,38 @@
 
         // Función para obtener traducciones de kanji desde la API
         async function getKanjiTranslation(kanjiChar) {
+            console.log('Getting translation for:', kanjiChar);
+            
             if (kanjiTranslations[kanjiChar]) {
+                console.log('From cache:', kanjiTranslations[kanjiChar]);
                 return kanjiTranslations[kanjiChar];
             }
             
             try {
+                console.log('Fetching from API...');
                 const response = await fetch(`https://kanjiapi.dev/v1/kanji/${kanjiChar}`);
+                console.log('Response status:', response.status);
+                
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('API data:', data);
                     const meanings = data.meanings || [];
+                    console.log('Meanings:', meanings);
+                    
                     // Traducir del inglés al español (básico)
                     const spanishTranslations = meanings.map(meaning => translateEnglishToSpanish(meaning));
+                    console.log('Spanish translations:', spanishTranslations);
+                    
                     kanjiTranslations[kanjiChar] = spanishTranslations;
                     return spanishTranslations;
+                } else {
+                    console.log('API response not ok:', response.statusText);
                 }
             } catch (error) {
                 console.log('Error fetching translation for:', kanjiChar, error);
             }
             
+            console.log('Using fallback translation');
             return ['Sin traducción'];
         }
 
