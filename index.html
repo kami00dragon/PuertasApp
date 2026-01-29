@@ -233,18 +233,40 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        .torii-card.expanding .card-front::before,
         .torii-card.expanded .card-front::before {
-            height: 20px;
-            top: -10px;
-            left: -10px;
-            right: -10px;
+            height: 30px;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            background: var(--torii-red) !important;
         }
 
+        .torii-card.expanding .card-front::after,
         .torii-card.expanded .card-front::after {
-            height: 10px;
-            top: 30px;
-            left: -10px;
-            right: -10px;
+            height: 15px;
+            top: 40px;
+            left: -20px;
+            right: -20px;
+            background: var(--torii-red) !important;
+        }
+
+        .torii-card.expanding .card-back::before,
+        .torii-card.expanded .card-back::before {
+            content: ''; 
+            position: absolute; 
+            top: -20px; left: -20px; right: -20px; height: 30px; 
+            background: var(--torii-red) !important; 
+            z-index: 2;
+        }
+
+        .torii-card.expanding .card-back::after,
+        .torii-card.expanded .card-back::after {
+            content: ''; 
+            position: absolute; 
+            top: 40px; left: -20px; right: -20px; height: 15px; 
+            background: var(--torii-red) !important; 
+            z-index: 2;
         }
 
         .torii-pillars {
@@ -262,10 +284,10 @@
 
         .torii-card.expanding .torii-pillars,
         .torii-card.expanded .torii-pillars {
-            left: -12px;
-            width: calc(100% + 24px);
-            border-left: 12px solid var(--torii-red);
-            border-right: 12px solid var(--torii-red);
+            left: -20px;
+            width: calc(100% + 40px);
+            border-left: 20px solid var(--torii-red);
+            border-right: 20px solid var(--torii-red);
         }
 
         .card-back {
