@@ -444,13 +444,48 @@
             object-fit: cover;
         }
 
-        .content-video {
+.content-video {
             max-width: 600px;
             width: 100%;
             height: auto;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             display: none;
+        }
+
+        .content-video.show {
+            display: block;
+        }
+
+        .video-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .video-play-btn {
+            background: var(--torii-red) !important;
+            color: white !important;
+            border: none !important;
+            padding: 15px 30px !important;
+            border-radius: 8px !important;
+            font-size: 1.1rem !important;
+            cursor: pointer !important;
+            transition: all 0.3s !important;
+            z-index: 1001 !important;
+            position: relative !important;
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .video-play-btn:hover {
+            background: #a00225 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(188, 0, 45, 0.4) !important;
         }
 
         .content-video.show {
@@ -680,11 +715,11 @@
             const isFirstCard = filteredCards.indexOf(card) === 0;
             const videoContent = isFirstCard ? `
                 <div class="video-container">
+                    <button class="video-play-btn" onclick="playVideo('${card.kanji}')">▶ Reproducir Video</button>
                     <video class="content-video" id="video-${card.kanji}" controls>
                         <source src="videos/story_clip_1.mp4" type="video/mp4">
                         Tu navegador no soporta video.
                     </video>
-                    <button class="video-play-btn" onclick="playVideo('${card.kanji}')">▶ Reproducir Video</button>
                 </div>
             ` : '';
             const isFirstCardContent = isFirstCard ? 'show' : '';
@@ -789,12 +824,21 @@ function toggleEditMode(kanji) {
         }
 
         function playVideo(kanji) {
+            console.log('Playing video for kanji:', kanji);
             const video = document.getElementById(`video-${kanji}`);
             const btn = event.target;
             
-            video.classList.add('show');
-            video.play();
-            btn.style.display = 'none';
+            if (video) {
+                video.classList.add('show');
+                btn.style.display = 'none';
+                
+                // Intentar reproducir el video
+                video.play().then(() => {
+                    console.log('Video playing successfully');
+                }).catch(error => {
+                    console.log('Video play error:', error);
+                });
+            }
         }
         }
 
