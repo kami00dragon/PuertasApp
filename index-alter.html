@@ -620,6 +620,7 @@
         let filteredCards = [];
         let currentExpandedCard = null;
         let cardData = {};
+        let kanjiTranslations = {}; // Cache para traducciones
 
         // Cargar datos de tarjetas y contenido guardado
         async function loadCards() {
@@ -658,6 +659,75 @@
             localStorage.setItem('puertasApp_data', JSON.stringify(cardData));
         }
 
+        // Función para obtener traducciones de kanji desde la API
+        async function getKanjiTranslation(kanjiChar) {
+            if (kanjiTranslations[kanjiChar]) {
+                return kanjiTranslations[kanjiChar];
+            }
+            
+            try {
+                const response = await fetch(`https://kanjiapi.dev/v1/kanji/${kanjiChar}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const meanings = data.meanings || [];
+                    // Traducir del inglés al español (básico)
+                    const spanishTranslations = meanings.map(meaning => translateEnglishToSpanish(meaning));
+                    kanjiTranslations[kanjiChar] = spanishTranslations;
+                    return spanishTranslations;
+                }
+            } catch (error) {
+                console.log('Error fetching translation for:', kanjiChar, error);
+            }
+            
+            return ['Sin traducción'];
+        }
+
+        // Función básica de traducción inglés -> español
+        function translateEnglishToSpanish(english) {
+            const translations = {
+                'every': 'cada',
+                'problem': 'problema', 
+                'difficulty': 'dificultad',
+                'tea': 'té',
+                'green': 'verde',
+                'black': 'negro',
+                'white': 'blanco',
+                'red': 'rojo',
+                'blue': 'azul',
+                'water': 'agua',
+                'fire': 'fuego',
+                'person': 'persona',
+                'day': 'día',
+                'night': 'noche',
+                'morning': 'mañana',
+                'today': 'hoy',
+                'tomorrow': 'mañana',
+                'yesterday': 'ayer',
+                'time': 'tiempo',
+                'year': 'año',
+                'month': 'mes',
+                'week': 'semana',
+                'big': 'grande',
+                'small': 'pequeño',
+                'good': 'bueno',
+                'bad': 'malo',
+                'new': 'nuevo',
+                'old': 'viejo',
+                'come': 'venir',
+                'go': 'ir',
+                'see': 'ver',
+                'hear': 'oír',
+                'eat': 'comer',
+                'drink': 'beber',
+                'study': 'estudiar',
+                'work': 'trabajar',
+                'learn': 'aprender',
+                'teach': 'enseñar'
+            };
+            
+            return translations[english.toLowerCase()] || english;
+        }
+
         function filterAndDisplayCards() {
             const searchTerm = document.querySelector('.search-input').value.toLowerCase().trim();
             
@@ -691,12 +761,19 @@
         }
 
         function createCard(card) {
-            console.log('Card data:', card); // Depuración
             const cardDiv = document.createElement('div');
             cardDiv.className = 'torii-card';
             cardDiv.dataset.kanji = card.kanji;
             
             const savedContent = cardData[card.kanji] || { text: '', images: [], kana: card.kana };
+            
+            // Obtener traducciones de la API
+            getKanjiTranslation(card.kanji).then(translations => {
+                const titleElement = cardDiv.querySelector('.spanish-title');
+                if (titleElement) {
+                    titleElement.textContent = translations.join(', ');
+                }
+            });
             
             // Añadir video al primer kanji
             const isFirstCard = filteredCards.indexOf(card) === 0;
@@ -726,7 +803,7 @@
                                 <div class="content-title">
                                     <div class="kanji-title">${card.kanji}</div>
                                     <div class="kana-title">${card.kana}</div>
-                                    <div class="spanish-title">${card.español ? card.español.join(', ') : (card.spanish ? card.spanish.join(', ') : 'Sin traducción')}</div>
+                                    <div class="spanish-title">Cargando traducción...</div>
                                 </div>
                                 <div class="content-text" contenteditable="true" data-kanji="${card.kanji}" id="text-${card.kanji}">${savedContent.text || ''}</div>
                                 <div class="content-images" id="images-${card.kanji}">
