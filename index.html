@@ -112,9 +112,20 @@
             height: 280px;
             position: relative;
             cursor: pointer;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
             transform-origin: center center;
+        }
+
+        .torii-card.expanding {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(3.5);
+            z-index: 1000;
+            margin: 0;
+            border-radius: 0;
+            animation: expandTorii 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         .torii-card.expanded {
@@ -126,10 +137,36 @@
             z-index: 1000;
             margin: 0;
             border-radius: 0;
-            transform: rotateY(180deg) scale(1);
+            transform: scale(1);
+            transform-origin: center center;
         }
 
-        .card-face {
+        @keyframes expandTorii {
+            0% {
+                width: 280px;
+                height: 280px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            70% {
+                width: 280px;
+                height: 280px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(3.5);
+            }
+            100% {
+                width: 100vw;
+                height: 100vh;
+                top: 0;
+                left: 0;
+                transform: scale(1);
+                transform-origin: center center;
+            }
+        }
+
+.card-face {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -144,7 +181,37 @@
             flex-direction: column;
             border: 1px solid #eee;
             background: white;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .torii-card.expanding .card-face {
+            animation: fadeOutFront 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .torii-card.expanded .card-face {
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: white;
+            opacity: 0;
+        }
+
+        .torii-card.expanding .card-back {
+            animation: fadeInBack 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+        }
+
+        @keyframes fadeOutFront {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes fadeInBack {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
         .torii-card.expanded .card-face {
@@ -271,6 +338,17 @@
             justify-content: center;
             align-items: center;
             background: white;
+            position: relative;
+        }
+
+        .content-area {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
         .empty-back {
@@ -282,12 +360,100 @@
             color: #ccc;
             font-size: 1.2rem;
             opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .empty-back.hidden {
+            display: none;
         }
 
         .empty-back-icon {
             font-size: 4rem;
             margin-bottom: 20px;
             color: #ddd;
+        }
+
+        .editable-content {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .editable-content.show {
+            display: flex;
+        }
+
+        .content-title {
+            font-size: 2rem;
+            color: var(--ink-black);
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 2px solid var(--torii-red);
+            padding-bottom: 15px;
+        }
+
+        .content-text {
+            flex: 1;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--ink-black);
+            min-height: 200px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            outline: none;
+            transition: border-color 0.3s;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .content-text:focus {
+            border-color: var(--torii-red);
+        }
+
+        .content-images {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .content-image {
+            max-width: 300px;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            object-fit: cover;
+        }
+
+        .add-content-btn {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            background: var(--torii-red);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(188, 0, 45, 0.3);
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .add-content-btn:hover {
+            background: #a00225;
+            transform: scale(1.1);
         }
 
         .close-btn {
@@ -474,9 +640,19 @@
                 </div>
                 <div class="card-face card-back">
                     <div class="back-content">
-                        <div class="empty-back">
-                            <div class="empty-back-icon">📝</div>
-                            <div>Espacio para contenido</div>
+                        <div class="content-area">
+                            <div class="empty-back" id="empty-${card.kanji}">
+                                <div class="empty-back-icon">📝</div>
+                                <div>Espacio para contenido</div>
+                            </div>
+                            <div class="editable-content" id="content-${card.kanji}">
+                                <h2 class="content-title">${card.kanji}</h2>
+                                <div class="content-text" contenteditable="true" data-kanji="${card.kanji}" id="text-${card.kanji}">${savedContent.text || ''}</div>
+                                <div class="content-images" id="images-${card.kanji}">
+                                    ${savedContent.images ? savedContent.images.map(img => `<img src="${img}" class="content-image" alt="Imagen">`).join('') : ''}
+                                </div>
+                            </div>
+                            <button class="add-content-btn" onclick="toggleEditMode('${card.kanji}')">+</button>
                         </div>
                     </div>
                 </div>
@@ -484,7 +660,22 @@
             
             // Event listeners
             cardDiv.addEventListener('click', function(e) {
+                if (e.target.classList.contains('add-content-btn') || 
+                    e.target.classList.contains('content-text')) {
+                    return; // No expandir si se está editando
+                }
                 expandCard(this);
+            });
+            
+            // Auto-save text editor
+            const textEditor = cardDiv.querySelector('.content-text');
+            textEditor.addEventListener('input', function() {
+                const kanji = this.dataset.kanji;
+                if (!cardData[kanji]) {
+                    cardData[kanji] = { text: '', images: [], kana: card.kana };
+                }
+                cardData[kanji].text = this.innerHTML;
+                saveCardData();
             });
             
             return cardDiv;
@@ -499,7 +690,14 @@
             }
             
             currentExpandedCard = card;
-            card.classList.add('expanded');
+            card.classList.add('expanding');
+            
+            // Después de la animación de expansión, cambiar a expanded
+            setTimeout(() => {
+                card.classList.remove('expanding');
+                card.classList.add('expanded');
+            }, 800);
+            
             document.getElementById('overlay').classList.add('show');
             document.getElementById('close-btn').classList.add('show');
             document.body.style.overflow = 'hidden';
@@ -513,6 +711,20 @@
             document.getElementById('overlay').classList.remove('show');
             document.getElementById('close-btn').classList.remove('show');
             document.body.style.overflow = '';
+        }
+
+        function toggleEditMode(kanji) {
+            const emptyBack = document.getElementById(`empty-${kanji}`);
+            const editableContent = document.getElementById(`content-${kanji}`);
+            
+            emptyBack.classList.add('hidden');
+            editableContent.classList.add('show');
+            
+            // Inicializar si no hay datos
+            if (!cardData[kanji]) {
+                cardData[kanji] = { text: '', images: [], kana: kanji };
+                saveCardData();
+            }
         }
 
         // Event listeners
