@@ -376,12 +376,33 @@
         }
 
         .content-title {
-            font-size: 2rem;
-            color: var(--ink-black);
-            margin-bottom: 30px;
             text-align: center;
             border-bottom: 2px solid var(--torii-red);
-            padding-bottom: 15px;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kanji-title {
+            font-size: 3rem;
+            color: var(--ink-black);
+            font-weight: bold;
+            font-family: serif;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .kana-title {
+            font-size: 1.5rem;
+            color: #666;
+            font-weight: normal;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .spanish-title {
+            font-size: 1.1rem;
+            color: #888;
+            font-weight: normal;
         }
 
         .content-text {
@@ -554,6 +575,18 @@
             .torii-card.expanded .kana-display {
                 font-size: 1.8rem;
             }
+
+            .kanji-title {
+                font-size: 2.5rem;
+            }
+
+            .kana-title {
+                font-size: 1.3rem;
+            }
+
+            .spanish-title {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -689,7 +722,11 @@
                                 <div>Espacio para contenido</div>
                             </div>
                             <div class="editable-content ${isFirstCardContent}" id="content-${card.kanji}">
-                                <h2 class="content-title">${card.kanji}</h2>
+                                <div class="content-title">
+                                    <div class="kanji-title">${card.kanji}</div>
+                                    <div class="kana-title">${card.kana}</div>
+                                    <div class="spanish-title">${card.español ? card.español.join(', ') : ''}</div>
+                                </div>
                                 <div class="content-text" contenteditable="true" data-kanji="${card.kanji}" id="text-${card.kanji}">${savedContent.text || ''}</div>
                                 <div class="content-images" id="images-${card.kanji}">
                                     ${videoContent}
