@@ -691,6 +691,7 @@
         }
 
         function createCard(card) {
+            console.log('Card data:', card); // Depuración
             const cardDiv = document.createElement('div');
             cardDiv.className = 'torii-card';
             cardDiv.dataset.kanji = card.kanji;
