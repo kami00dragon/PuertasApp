@@ -725,7 +725,7 @@
                                 <div class="content-title">
                                     <div class="kanji-title">${card.kanji}</div>
                                     <div class="kana-title">${card.kana}</div>
-                                    <div class="spanish-title">${card.español ? card.español.join(', ') : ''}</div>
+                                    <div class="spanish-title">${card.español ? card.español.join(', ') : (card.spanish ? card.spanish.join(', ') : 'Sin traducción')}</div>
                                 </div>
                                 <div class="content-text" contenteditable="true" data-kanji="${card.kanji}" id="text-${card.kanji}">${savedContent.text || ''}</div>
                                 <div class="content-images" id="images-${card.kanji}">
