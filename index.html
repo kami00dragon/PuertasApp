@@ -650,7 +650,9 @@
             
             // Añadir video al primer kanji
             const isFirstCard = filteredCards.indexOf(card) === 0;
-            const videoContent = isFirstCard ? '<video class="content-video" controls autoplay muted loop><source src="videos/story_clip_1.mp4" type="video/mp4">Tu navegador no soporta video.</video>' : '';
+            const videoContent = isFirstCard ? '<video class="content-video" controls><source src="videos/story_clip_1.mp4" type="video/mp4">Tu navegador no soporta video.</video>' : '';
+            const isFirstCardContent = isFirstCard ? 'show' : '';
+            const emptyHidden = isFirstCard ? 'hidden' : '';
             
             cardDiv.innerHTML = `
                 <div class="torii-pillars"></div>
@@ -663,11 +665,11 @@
                 <div class="card-face card-back">
                     <div class="back-content">
                         <div class="content-area">
-                            <div class="empty-back" id="empty-${card.kanji}">
+                            <div class="empty-back ${emptyHidden}" id="empty-${card.kanji}">
                                 <div class="empty-back-icon">📝</div>
                                 <div>Espacio para contenido</div>
                             </div>
-                            <div class="editable-content" id="content-${card.kanji}">
+                            <div class="editable-content ${isFirstCardContent}" id="content-${card.kanji}">
                                 <h2 class="content-title">${card.kanji}</h2>
                                 <div class="content-text" contenteditable="true" data-kanji="${card.kanji}" id="text-${card.kanji}">${savedContent.text || ''}</div>
                                 <div class="content-images" id="images-${card.kanji}">
