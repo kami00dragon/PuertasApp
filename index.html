@@ -450,6 +450,34 @@
             height: auto;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .content-video.show {
+            display: block;
+        }
+
+        .video-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .video-play-btn {
+            background: var(--torii-red);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .video-play-btn:hover {
+            background: #a00225;
+            transform: translateY(-2px);
         }
 
         .add-content-btn {
@@ -650,7 +678,15 @@
             
             // Añadir video al primer kanji
             const isFirstCard = filteredCards.indexOf(card) === 0;
-            const videoContent = isFirstCard ? '<video class="content-video" controls><source src="videos/story_clip_1.mp4" type="video/mp4">Tu navegador no soporta video.</video>' : '';
+            const videoContent = isFirstCard ? `
+                <div class="video-container">
+                    <video class="content-video" id="video-${card.kanji}" controls>
+                        <source src="videos/story_clip_1.mp4" type="video/mp4">
+                        Tu navegador no soporta video.
+                    </video>
+                    <button class="video-play-btn" onclick="playVideo('${card.kanji}')">▶ Reproducir Video</button>
+                </div>
+            ` : '';
             const isFirstCardContent = isFirstCard ? 'show' : '';
             const emptyHidden = isFirstCard ? 'hidden' : '';
             
@@ -738,7 +774,7 @@
             document.body.style.overflow = '';
         }
 
-        function toggleEditMode(kanji) {
+function toggleEditMode(kanji) {
             const emptyBack = document.getElementById(`empty-${kanji}`);
             const editableContent = document.getElementById(`content-${kanji}`);
             
@@ -747,9 +783,19 @@
             
             // Inicializar si no hay datos
             if (!cardData[kanji]) {
-                cardData[kanji] = { text: '', images: [], kana: kanji, hasVideo: filteredCards.findIndex(card => card.kanji === kanji) === 0 };
+                cardData[kanji] = { text: '', images: [], kana: kanji };
                 saveCardData();
             }
+        }
+
+        function playVideo(kanji) {
+            const video = document.getElementById(`video-${kanji}`);
+            const btn = event.target;
+            
+            video.classList.add('show');
+            video.play();
+            btn.style.display = 'none';
+        }
         }
 
         // Event listeners
