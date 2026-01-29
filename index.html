@@ -444,6 +444,14 @@
             object-fit: cover;
         }
 
+        .content-video {
+            max-width: 600px;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
         .add-content-btn {
             position: absolute;
             bottom: 40px;
@@ -640,6 +648,10 @@
             
             const savedContent = cardData[card.kanji] || { text: '', imageUrl: '', kana: card.kana };
             
+            // Añadir video al primer kanji
+            const isFirstCard = filteredCards.indexOf(card) === 0;
+            const videoContent = isFirstCard ? '<video class="content-video" controls autoplay muted loop><source src="videos/story_clip_1.mp4" type="video/mp4">Tu navegador no soporta video.</video>' : '';
+            
             cardDiv.innerHTML = `
                 <div class="torii-pillars"></div>
                 <div class="card-face card-front">
@@ -659,6 +671,7 @@
                                 <h2 class="content-title">${card.kanji}</h2>
                                 <div class="content-text" contenteditable="true" data-kanji="${card.kanji}" id="text-${card.kanji}">${savedContent.text || ''}</div>
                                 <div class="content-images" id="images-${card.kanji}">
+                                    ${videoContent}
                                     ${savedContent.images ? savedContent.images.map(img => `<img src="${img}" class="content-image" alt="Imagen">`).join('') : ''}
                                 </div>
                             </div>
@@ -732,7 +745,7 @@
             
             // Inicializar si no hay datos
             if (!cardData[kanji]) {
-                cardData[kanji] = { text: '', images: [], kana: kanji };
+                cardData[kanji] = { text: '', images: [], kana: kanji, hasVideo: filteredCards.findIndex(card => card.kanji === kanji) === 0 };
                 saveCardData();
             }
         }
