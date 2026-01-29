@@ -112,8 +112,9 @@
             height: 280px;
             position: relative;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
+            transform-origin: center center;
         }
 
         .torii-card.expanded {
@@ -125,6 +126,7 @@
             z-index: 1000;
             margin: 0;
             border-radius: 0;
+            transform: rotateY(180deg) scale(1);
         }
 
         .card-face {
@@ -142,12 +144,17 @@
             flex-direction: column;
             border: 1px solid #eee;
             background: white;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .torii-card.expanded .card-face {
             border-radius: 0;
             box-shadow: none;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: white;
         }
 
         /* Estilo Torii para las tarjetas */
@@ -207,23 +214,14 @@
         }
 
         .card-back {
-            opacity: 0;
-            transform: scale(0.8);
-            pointer-events: none;
             background: white;
             padding: 30px;
             overflow-y: auto;
-        }
-
-        .torii-card.expanded .card-back {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: auto;
+            transform: rotateY(180deg);
         }
 
         .torii-card.expanded .card-front {
-            transform: scale(0.9);
-            opacity: 0.3;
+            opacity: 0.1;
         }
 
         .jp-content { 
@@ -235,7 +233,7 @@
             height: 100%; 
             background: #fff;
             color: var(--ink-black);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .kanji-display { 
@@ -244,7 +242,7 @@
             line-height: 1; 
             font-family: serif; 
             color: var(--ink-black);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .torii-card.expanded .kanji-display {
@@ -257,7 +255,7 @@
             opacity: 0.8; 
             color: #555; 
             font-weight: normal;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .torii-card.expanded .kana-display {
@@ -270,65 +268,26 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            background: white;
         }
 
-        .editor-title {
-            font-size: 1.5rem;
-            color: var(--ink-black);
-            border-bottom: 2px solid var(--torii-red);
-            padding-bottom: 10px;
-        }
-
-        .text-editor {
-            flex: 1;
-            min-height: 200px;
-            border: 2px solid #eee;
-            border-radius: 8px;
-            padding: 15px;
-            font-size: 1rem;
-            line-height: 1.6;
-            resize: none;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .text-editor:focus {
-            border-color: var(--torii-red);
-        }
-
-        .image-upload {
+        .empty-back {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #ccc;
+            font-size: 1.2rem;
+            opacity: 0.5;
         }
 
-        .upload-btn {
-            background: var(--torii-red);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .upload-btn:hover {
-            background: #a00225;
-            transform: translateY(-2px);
-        }
-
-        .image-preview {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            display: none;
-        }
-
-        .image-preview.show {
-            display: block;
+        .empty-back-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #ddd;
         }
 
         .close-btn {
@@ -515,12 +474,9 @@
                 </div>
                 <div class="card-face card-back">
                     <div class="back-content">
-                        <h3 class="editor-title">${card.kanji} - Contenido Personal</h3>
-                        <textarea class="text-editor" placeholder="Agrega tus notas aquí..." data-kanji="${card.kanji}">${savedContent.text || ''}</textarea>
-                        <div class="image-upload">
-                            <button class="upload-btn" onclick="document.getElementById('img-upload-${card.kanji}').click()">Subir Imagen</button>
-                            <input type="file" id="img-upload-${card.kanji}" accept="image/*" style="display: none;" data-kanji="${card.kanji}">
-                            <img class="image-preview ${savedContent.imageUrl ? 'show' : ''}" src="${savedContent.imageUrl || ''}" alt="Imagen personal" id="img-preview-${card.kanji}">
+                        <div class="empty-back">
+                            <div class="empty-back-icon">📝</div>
+                            <div>Espacio para contenido</div>
                         </div>
                     </div>
                 </div>
@@ -528,43 +484,7 @@
             
             // Event listeners
             cardDiv.addEventListener('click', function(e) {
-                if (!e.target.classList.contains('text-editor') && 
-                    !e.target.classList.contains('upload-btn') &&
-                    !e.target.classList.contains('image-preview') &&
-                    !e.target.type === 'file') {
-                    expandCard(this);
-                }
-            });
-            
-            // Auto-save text editor
-            const textEditor = cardDiv.querySelector('.text-editor');
-            textEditor.addEventListener('input', function() {
-                const kanji = this.dataset.kanji;
-                if (!cardData[kanji]) cardData[kanji] = { text: '', imageUrl: '', kana: card.kana };
-                cardData[kanji].text = this.value;
-                saveCardData();
-            });
-            
-            // Image upload
-            const fileInput = cardDiv.querySelector('input[type="file"]');
-            fileInput.addEventListener('change', function(e) {
-                const kanji = this.dataset.kanji;
-                const file = e.target.files[0];
-                
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const imgData = e.target.result;
-                        if (!cardData[kanji]) cardData[kanji] = { text: '', imageUrl: '', kana: card.kana };
-                        cardData[kanji].imageUrl = imgData;
-                        saveCardData();
-                        
-                        const preview = document.getElementById(`img-preview-${kanji}`);
-                        preview.src = imgData;
-                        preview.classList.add('show');
-                    };
-                    reader.readAsDataURL(file);
-                }
+                expandCard(this);
             });
             
             return cardDiv;
